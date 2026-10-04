@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, height: 0, opacity: 0 });
+  const ulRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -29,32 +31,68 @@ export default function Navbar() {
     setIsOpen(false);
   };
 
+  const handleMouseEnter = (e) => {
+    const link = e.currentTarget;
+    const parent = ulRef.current;
+    if (link && parent) {
+      const parentRect = parent.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      setPillStyle({
+        left: linkRect.left - parentRect.left,
+        top: linkRect.top - parentRect.top,
+        width: linkRect.width,
+        height: linkRect.height,
+        opacity: 1,
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setPillStyle((prev) => ({ ...prev, opacity: 0 }));
+  };
+
   return (
     <header className="nav">
-      {/* FLOATING IOS GLASSMORPHISM CAPSULE DOCK */}
+      {/* FLOATING IOS LIQUID GLASS DOCK */}
       <div className="nav__glass-container">
         {/* LINKS & MOBILE MENU PANEL */}
         <nav className={`nav__nav ${isOpen ? 'is-open' : ''}`} id="site-menu">
-          <ul className="nav__links">
+          <ul className="nav__links" ref={ulRef} onMouseLeave={handleMouseLeave}>
+            {/* Sliding Liquid Glass Pill Highlight */}
+            <div className="liquid-glass-pill" style={pillStyle} />
+
             <li className="rise" style={{ '--i': 2 }}>
-              <a href="#about" onClick={closeMenu}>About</a>
+              <a href="#about" onMouseEnter={handleMouseEnter} onClick={closeMenu}>
+                About
+              </a>
             </li>
             <li className="rise" style={{ '--i': 3 }}>
-              <a href="#skills" onClick={closeMenu}>Skills</a>
+              <a href="#skills" onMouseEnter={handleMouseEnter} onClick={closeMenu}>
+                Skills
+              </a>
             </li>
             <li className="rise" style={{ '--i': 4 }}>
-              <a href="#projects" onClick={closeMenu}>Projects</a>
+              <a href="#projects" onMouseEnter={handleMouseEnter} onClick={closeMenu}>
+                Projects
+              </a>
             </li>
             <li className="rise" style={{ '--i': 5 }}>
-              <a href="#research" onClick={closeMenu}>Research</a>
+              <a href="#research" onMouseEnter={handleMouseEnter} onClick={closeMenu}>
+                Research
+              </a>
             </li>
             <li className="rise" style={{ '--i': 6 }}>
-              <a href="#experience" onClick={closeMenu}>Experience</a>
+              <a href="#experience" onMouseEnter={handleMouseEnter} onClick={closeMenu}>
+                Experience
+              </a>
             </li>
             <li className="rise" style={{ '--i': 7 }}>
-              <a href="mailto:nancyyy1405@gmail.com" onClick={closeMenu}>Contact</a>
+              <a href="mailto:nancyyy1405@gmail.com" onMouseEnter={handleMouseEnter} onClick={closeMenu}>
+                Contact
+              </a>
             </li>
           </ul>
+
           <div className="menu__cta-mobile">
             <a className="btn-dark menu__cta" href="mailto:nancyyy1405@gmail.com" onClick={closeMenu}>
               Contact
@@ -73,7 +111,9 @@ export default function Navbar() {
 
         {/* CTA BUTTONS (DESKTOP BAR) */}
         <div className="nav__cta rise" style={{ '--i': 6 }}>
-          <a className="btn-dark" href="mailto:nancyyy1405@gmail.com">Contact</a>
+          <a className="btn-dark" href="mailto:nancyyy1405@gmail.com">
+            Contact
+          </a>
           <a
             className="btn-dark"
             href="Resume_Neha.pdf"
